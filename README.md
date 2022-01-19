@@ -136,6 +136,6 @@ Parts of this project are based on the following repositories:
 <img src="img/Figure_1.png"/>
 <img src="img/Figure_2.png"/>
 <img src="img/Figure_3.png"/>
-<img src="img/Figure_4.png"/>
-<img src="img/Figure_5.png"/>
 <img src="img/Figure_6.png"/>
+<img src="img/Figure_5.png"/>
+
