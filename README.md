@@ -138,7 +138,7 @@ Parts of this project are based on the following repositories:
 <img src="img/Figure_3.png"/>
 <img src="img/Figure_4.png"/>
 <img src="img/Figure_5.png"/>
-<img src="img/Figure_6.png"/>
+
 
 
 https://user-images.githubusercontent.com/89602857/150123827-92437302-ed33-481d-a40d-353ba1dfd287.mp4
