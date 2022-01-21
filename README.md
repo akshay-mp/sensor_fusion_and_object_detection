@@ -133,6 +133,13 @@ Parts of this project are based on the following repositories:
 [License](LICENSE.md)
 
 ## Sensor Fusion and Object Detection
+In this project, the extended Kalman fusion (EKF) filter is applied on Waymo Open Dataset to track the vehicles. 
+The project is divided into 4 steps:
+1. To track the real-world target with lidar measurement using an EKF filter.
+2. Implement track management to initialize and delete tracks, set track state, and track score.
+3. Implement a single nearest neighbor data association to associate track.
+4. Implement the nonlinear camera measurement model.
+
 <img src="img/Figure_1.png"/>
 <img src="img/Figure_2.png"/>
 <img src="img/Figure_3.png"/>
