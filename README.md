@@ -163,10 +163,26 @@ In this task, the matrix with all tracks is built and the Mahalanobis Distance f
 <img src="img/Figure_4.png"/>
 The above image shows the ground box on the detected object.
 
-### Step 4: track measuement
+### Step 4: Sensor fusion module for camera-lidar fusion
+
+In this task, the measurement model's 3D space points are transformed into a 2D image by a projection matrix. The Jacobian is used for the measurement model and partial derivatives of system matrix (x,y,z) w.r.t. measurement models (u,v), camera measurement with measurement noise R helps to check if the track state is within the camera field of view. This aids in either accepting track set measurement or rejecting.
 
 <img src="img/Figure_5.png"/>
+The above image shows the root mean square of each track measurement. All the values of mean are below 0.25
 
 https://user-images.githubusercontent.com/89602857/150123827-92437302-ed33-481d-a40d-353ba1dfd287.mp4
+ The above video shows the each track measurement.
+ 
+## Obstacles faced:
+The transformation of 3D point space to a 2D image in the camera measurement model was difficult due to a slight mismatch that happened while transforming from the x,y,z coordinates to camera axis coordinates. I faced an issue while running track management from step 2 due to preloaded results. I couldn't get the desired results on running the second time.
 
+## Benefits in camera-lidar fusion compared to lidar-only tracking 
+The camera alone cannot provide the required detection and tracking, the camera requires aid from Lidar to complete the tracking and detection accurately and with minimum error. The camera has advantages like color recognization, object detection, and classification. The Lidar through its spatial projection of beams can help in adding features like object detection in foggy, rainy, dark conditions and measuring distance. The fusion of camera and lidar through Resnet architecture leads to better detection of objects and increase operational efficiency. 
 
+## Real-life challenges
+1. In a real-life scenario, the multiple tracking and measurement are difficult due to its gating threshold.
+2. The noise variance for each measurement is different in the real-world scenario, and the noise variance should be variable and not fixed.
+3. The process model should be based on accuracy and computations. 
+
+## Improvement Opportunity
+In this project, the camera data is restricted to the front camera, and this can be improved by adding multiple cameras which aid in wider object detection and helps in multiple tracking.
