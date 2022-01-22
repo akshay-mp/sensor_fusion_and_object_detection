@@ -140,13 +140,32 @@ The project is divided into 4 steps:
 3. Implement a single nearest neighbor data association to associate track.
 4. Implement the nonlinear camera measurement model.
 
+### Step 1: EKF filter
+
+In this task, the system states [x, y, z, vx, vy, vz], process model, and constant velocity models are designed and a system matrix with constant velocity and noise covariances for the 3D process model is calculated. This calculation aid in obtaining state h(x) and Jacobian H through computation. By evaluating h(x) and Jacobian H, the current state is calculated. The state and covariance are updated by using computed Kalman gain.
+
 <img src="img/Figure_1.png"/>
+
 <img src="img/Figure_2.png"/>
+The above graph shows the root mean square of 0.29, less than the desired result of 0.35. 
+
+### Step 2: Track Management
+
+In this task, the unassigned lidar calculations initialize the track. The track score is associated with track measuement, and corresponding scores were increased or decreased accordingly. If the track score is below the minimum threshold, the track gets deleted, or else the track state changes to confirmed status upon reaching a maximum threshold.
+
 <img src="img/Figure_3.png"/>
+The above graph shows the root mean square of 0.79
+
+### Step 3: Data Association
+
+In this task, the matrix with all tracks is built and the Mahalanobis Distance for each track measurement is calculated. The hypothesis test Chi-Square is used for removing irrelevant track sets. The Kalman filter is updated with the selected minimum Mahalanobis Distance track set and from the relation matrix, the relevant row and column are deleted. If the calculated Mahalanobis Distance from the inverse cumulative chi-squared distribution is lesser than the threshold, the track measurement will be inside the track's gate.
+
 <img src="img/Figure_4.png"/>
+The above image shows the ground box on the detected object.
+
+### Step 4: track measuement
+
 <img src="img/Figure_5.png"/>
-
-
 
 https://user-images.githubusercontent.com/89602857/150123827-92437302-ed33-481d-a40d-353ba1dfd287.mp4
 
