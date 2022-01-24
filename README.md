@@ -170,8 +170,9 @@ In this task, the measurement model's 3D space points are transformed into a 2D 
 <img src="img/Figure_5.png"/>
 The above image shows the root mean square of each track measurement. All the values of mean are below 0.25
 
-https://user-images.githubusercontent.com/89602857/150123827-92437302-ed33-481d-a40d-353ba1dfd287.mp4
- The above video shows the each track measurement.
+![my-tracking-results-1](https://user-images.githubusercontent.com/89602857/150796708-2ba22bf0-777a-42e2-b165-36cbca16e993.gif)
+
+The above video shows the each track measurement.
  
 ## Obstacles faced:
 The transformation of 3D point space to a 2D image in the camera measurement model was difficult due to a slight mismatch that happened while transforming from the x,y,z coordinates to camera axis coordinates. I faced an issue while running track management from step 2 due to preloaded results. I couldn't get the desired results on running the second time.
