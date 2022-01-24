@@ -170,7 +170,11 @@ In this task, the measurement model's 3D space points are transformed into a 2D 
 <img src="img/Figure_5.png"/>
 The above image shows the root mean square of each track measurement. All the values of mean are below 0.25
 
-![my-tracking-results-1](https://user-images.githubusercontent.com/89602857/150796708-2ba22bf0-777a-42e2-b165-36cbca16e993.gif)
+
+
+https://user-images.githubusercontent.com/89602857/150798566-5b295e12-c899-4e3b-987b-5a2ed9464a58.mp4
+
+
 
 The above video shows the each track measurement.
  
