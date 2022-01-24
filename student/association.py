@@ -40,36 +40,38 @@ class Association:
         # - update list of unassigned measurements and unassigned tracks
         ############
         
-        
-        
         # the following only works for at most one track and one measurement
-        association_matrix = [] 
+        association_matrix = []
         self.unassigned_tracks = [] # reset lists
         self.unassigned_meas = []
+#         
+#         if len(meas_list) > 0:
+#             self.unassigned_meas = [0]
+#         if len(track_list) > 0:
+#             self.unassigned_tracks = [0]
+#         if len(meas_list) > 0 and len(track_list) > 0: 
+#             self.association_matrix = np.matrix([[0]])
         
-        #if len(meas_list) > 0:
-        #    self.unassigned_meas = [0]
-        #if len(track_list) > 0:
-         #   self.unassigned_tracks = [0]
-        #if len(meas_list) > 0 and len(track_list) > 0: 
-         #   self.association_matrix = np.matrix([[0]])
         for track in track_list:
             res = []
             for meas in meas_list:
                 MHD = self.MHD(track, meas, KF)
                 sensor = meas.sensor
-                if self.gating(MHD, sensor):
+                if self.gating_ok(MHD, sensor):
                     res.append(MHD)
 #                     if sensor.name == "camera":
 #                         print("track {}, state={}, MHD= {}".format(track.id, track.state, MHD))
                 else:
                     res.append(np.inf)
             association_matrix.append(res)
-            
+        #Here we set all tracks and measurements to be unassigned, later on 
+        #we will finally assign them when calling get_closest_track_and_meas
         self.unassigned_tracks = np.arange(len(track_list)).tolist()
         self.unassigned_meas = np.arange(len(meas_list)).tolist()
         
         self.association_matrix = np.matrix(association_matrix)
+        
+        return
         ############
         # END student code
         ############ 
@@ -83,8 +85,7 @@ class Association:
         # - return this track and measurement
         ############
 
-        # the following only works for at most one track and one measurement
-        
+        # the following only works for at most one track and one measurement  
         A = self.association_matrix
         if np.min(A) == np.inf:
             return np.nan, np.nan
@@ -102,24 +103,19 @@ class Association:
         # update this track with this measurement
         update_track = self.unassigned_tracks[ind_track] 
         update_meas = self.unassigned_meas[ind_meas]
-        
-        # remove from list
+
+        # remove this track and measurement from list
         self.unassigned_tracks.remove(update_track) 
         self.unassigned_meas.remove(update_meas)
-        #self.association_matrix = np.matrix([])
-        
-        
 
-        ############
-        # END student code
-        ############ 
         return update_track, update_meas     
 
-    def gating(self, MHD, sensor): 
+    def gating_ok(self, MHD, sensor): 
         ############
         # TODO Step 3: return True if measurement lies inside gate, otherwise False
         ############
-            
+        df = None
+        gate_val = None
         if sensor.name == 'lidar':
             #While fine tuning the algorihm, we find that it's better to have a larger gate threshold for lidar 
             #which means current lidar noise is a bit underestimated
@@ -130,10 +126,10 @@ class Association:
             gate_val = params.gating_threshold
             df = 1
         x= MHD * MHD
-        limit = chi2.cdf(x, df)
+        per = chi2.cdf(x, df)
         if sensor.name == 'lidar':
-            print("lidar chisqr = {}".format(limit))
-        if limit <  gate_val:
+            print("lidar chisqr = {}".format(per))
+        if per <  gate_val:
             return True
         else:
             return False
@@ -146,20 +142,23 @@ class Association:
         ############
         # TODO Step 3: calculate and return Mahalanobis distance
         ############
-        H = np.matrix(meas.z)
-        H_pred = meas.sensor.get_hx(track.x)
-        gamma = H - H_pred 
+        z = np.matrix(meas.z)
+        z_pred = meas.sensor.get_hx(track.x)
+        y = z - z_pred 
         S = meas.R
         
-        MHD = math.sqrt(gamma.T * S.I * gamma)
+        d = math.sqrt(y.T * S.I * y)
         
-        return MHD
+        
+        return d
         
         ############
         # END student code
         ############ 
     
     def associate_and_update(self, manager, meas_list, KF):
+        if len(meas_list) == 0:
+            return
         # associate measurements and tracks
         self.associate(manager.track_list, meas_list, KF)
     
@@ -182,13 +181,15 @@ class Association:
             KF.update(track, meas_list[ind_meas])
             
             # update score and track state 
-            manager.handle_updated_track(track)
+            if meas_list[0].sensor.name == 'lidar':
+                manager.handle_updated_track(track)
             
             # save updated track
             manager.track_list[ind_track] = track
             
         # run track management 
-        manager.manage_tracks(self.unassigned_tracks, self.unassigned_meas, meas_list)
+        if meas_list[0].sensor.name == 'lidar':
+            manager.manage_tracks(self.unassigned_tracks, self.unassigned_meas, meas_list)
         
         for track in manager.track_list:            
-            print('track', track.id, 'score =', track.score)
+            print('track', track.id, 'score =', track.score, 'state={}'.format(track.state))
